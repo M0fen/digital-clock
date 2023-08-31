@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    transition: background-color 0.5s, color 0.5s;
+    background-color: #fff; /* Modo diurno: fondo blanco */
+    color: #333; /* Modo diurno: letra negra */
+  }
+
+  .dark-mode {
+    background-color: #333;
+    color: #f0f0f0;
+  }
+
+  #clock {
+    font-size: 4rem;
+    margin-bottom: 20px;
+  }
+
+  .toggle-container {
+    margin-bottom: 10px;
+  }
+
+  .toggle-label {
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  .toggle-input {
+    display: none;
+  }
+
+  .toggle-slider {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 20px;
+  }
+
+  .toggle-slider:before {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    left: 2px;
+    top: 2px;
+    transition: transform 0.3s;
+  }
+
+  .toggle-input:checked + .toggle-slider:before {
+    transform: translateX(20px);
+  }
+
+  #alarm {
+    margin-top: 20px;
+  }
+
+  .alarm-label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .alarm-input {
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+</style>
+<title>Digital Clock</title>
+</head>
+<body>
+<div class="toggle-container">
+  <span class="toggle-label">Modo Nocturno</span>
+  <label class="toggle">
+    <input type="checkbox" class="toggle-input" id="darkModeToggle">
+    <span class="toggle-slider"></span>
+  </label>
+</div>
+<div id="clock">12:00:00</div>
+<div id="alarm">
+  <label for="alarmTime" class="alarm-label">Establecer Alarma:</label>
+  <input type="time" id="alarmTime" class="alarm-input">
+  <button type="button" id="setAlarmButton">Aceptar</button>
+</div>
+<script>
+  const darkModeToggle = document.getElementById('darkModeToggle');
+  const clock = document.getElementById('clock');
+  const alarmContainer = document.getElementById('alarm');
+  const alarmInput = document.getElementById('alarmTime');
+  const setAlarmButton = document.getElementById('setAlarmButton');
+
+  function updateClock() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const timeString = `${hours}:${minutes}:${seconds}`;
+    clock.textContent = timeString;
+  }
+
+  setInterval(updateClock, 1000);
+  updateClock(); // Initial call to avoid delay
+
+  darkModeToggle.addEventListener('change', () => {
+    document.body.classList.toggle('dark-mode', darkModeToggle.checked);
+    if (darkModeToggle.checked) {
+      clock.style.color = "#f0f0f0"; /* Modo nocturno: letra blanca */
+      document.body.style.backgroundColor = "#333"; /* Modo nocturno: fondo negro */
+    } else {
+      clock.style.color = "#333"; /* Modo diurno: letra negra */
+      document.body.style.backgroundColor = "#fff"; /* Modo diurno: fondo blanco */
+    }
+  });
+
+  setAlarmButton.addEventListener('click', () => {
+    const alarmValue = alarmInput.value;
+    if (alarmValue) {
+      const [hours, minutes] = alarmValue.split(":");
+      const alarmTime = new Date();
+      alarmTime.setHours(hours);
+      alarmTime.setMinutes(minutes);
+      alert(`Alarma configurada para las ${hours}:${minutes}`);
+      alarmInput.value = "";
+    }
+  });
+</script>
+</body>
+</html>
